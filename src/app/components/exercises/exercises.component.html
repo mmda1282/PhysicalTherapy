@@ -1,0 +1,259 @@
+<div class="container-fluid">
+     <div class="d-flex align-items-end justify-content-center">
+        <h1 class="categoryTitle  m-2 text-center">{{category.name}}</h1>
+        <p>(يوجد <span>{{exercises.length}}</span> تمارين)</p>
+
+    </div>
+    <div class="d-flex justify-content-between align-items-center p-0">
+        <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#myModal">
+            اضافة فئة <i class="fas fa-plus fs-6"></i>
+        </button>
+        <button type="button" class="btn btn-outline-info fs-5 me-4" data-bs-toggle="modal" data-bs-target="#filterModal">
+            <i class="fas fa-filter"></i> فلتر
+        </button>
+    </div>
+    <div class="row justify-content-center my-4" style="gap: 1rem;">
+   
+
+    <div *ngIf="exercises.length === 0" class="mx-auto p-3 text-center my-4 border border-1 border-info bg-info-subtle">
+        لا يوجد تمارين في هذه الفئة
+    </div>
+
+    <div class="col-lg-3 col-md-5 col-sm-11 col-11" *ngFor="let exercise of exercises">
+
+        <div class="card px-0" style="width: 98%; min-height: 26rem;">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" (change)="onCheckboxChange(exercise.id, $event)">
+            </div>
+            <div class="CardImg mb-2">
+            <img [src]="exercise.photoUrl" class="card-img-top " [alt]="exercise.name" width="100%">
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+                    <div class="w-75">
+                        <h5 class="card-title ">{{ exercise.name }}</h5>
+                        <h6 class="card-title text-info">{{ exercise.exerciseType }}</h6>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="btn border-info dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <button class="dropdown-item" (click)="deleteExercise(exercise.id)">
+                                <i class="fas fa-trash text-danger"></i> مسح
+                            </button>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#myUpdateModal"
+                                (click)="sendExId(exercise.id)">
+                                <i class="fas fa-edit"></i> تعديل
+                            </button>
+                            <button class="dropdown-item">
+                                <a [href]="exercise.exerciseLink" target="_blank"
+                                    class="text-decoration-none text-dark">
+                                    <i class="fas fa-link"></i> عرض الفيديو
+                                </a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <p class="card-text overflow-hidden slide">
+                    {{ exercise.showFullText ? exercise.description : (exercise.description | slice:0:50) }}
+                    <button *ngIf="exercise.showReadMore" (click)="toggleText(exercise)"
+                        class="btn shadow-0 border-0 text-info">
+                        {{ exercise.showFullText ? 'اقرأ أقل' : '...اقرأ المزيد' }}
+                    </button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+
+    <div class="pagination-circle d-flex justify-content-end ms-5 ">
+        <button class="btn btn-outline-info fs-5 me-5 ms-3" (click)="goToPreviousPage()"
+            >السابق</button>
+        <button class="btn btn-outline-info fs-5" (click)="goToNextPage()">التالي</button>
+    </div>
+
+
+<!-- AddModal -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="onSubmit()">
+                    <div class="form-group">
+                        <label for="exerciseName">اسم تمرين</label>
+                        <input type="text" id="exerciseName" [(ngModel)]="exerciseName" name="exerciseName"
+                            class="form-control" placeholder="اضف اسم التمرين" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exerciseLink">رابط تمرين</label>
+                        <input type="text" id="exerciseLink" [(ngModel)]="exerciseLink" name="exerciseLink"
+                            class="form-control" placeholder="اضف رابط فيديو التمرين" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exerciseType">نوع تمرين</label>
+                        <select id="exerciseType" [(ngModel)]="exerciseType" name="exerciseType" class="form-control"
+                            required>
+                            <option value="" disabled selected>اختر نوع التمرين</option>
+                            <option value="توازن">توازن</option>
+                            <option value="استطاله">استطاله</option>
+                            <option value="تقوية">تقوية</option>
+                            <option value="اخري">اخري</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">وصف تمرين</label>
+                        <textarea id="description" [(ngModel)]="description" name="description" class="form-control"
+                            placeholder="وصف اسم التمرين" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="file">اختر صورة</label>
+                        <input type="file" id="file" (change)="onFileSelected($event)" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-info" data-bs-dismiss="modal">اضافة</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- UpdateModal -->
+<div class="modal fade" id="myUpdateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="onUpdate()">
+                    <div class="form-group">
+                        <label for="exerciseName">اسم تمرين</label>
+                        <input type="text" id="exerciseName" [(ngModel)]="exerciseName" name="exerciseName"
+                            class="form-control" placeholder="اضف اسم التمرين" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exerciseLink">رابط تمرين</label>
+                        <input type="text" id="exerciseLink" [(ngModel)]="exerciseLink" name="exerciseLink"
+                            class="form-control" placeholder="اضف رابط فيديو التمرين" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exerciseType">نوع تمرين</label>
+                        <select id="exerciseType" [(ngModel)]="exerciseType" name="exerciseType" class="form-control"
+                            required>
+                            <option value="" disabled selected>اختر نوع التمرين</option>
+                            <option value="توازن">توازن</option>
+                            <option value="استطاله">استطاله</option>
+                            <option value="تقوية">تقوية</option>
+                            <option value="اخري">اخري</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">وصف تمرين</label>
+                        <textarea id="description" [(ngModel)]="description" name="description" class="form-control"
+                            placeholder="وصف اسم التمرين" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="file">اختر صورة</label>
+                        <input type="file" id="file" (change)="onFileSelected($event)" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-info" data-bs-dismiss="modal">تحديث</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="categoryId">اختر الفئة</label>
+                    <select id="categoryId" [(ngModel)]="selectedCategoryId" name="categoryId" class="form-control"
+                        required>
+                        <option value="" disabled selected>اختر الفئة</option>
+                        <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exerciseType">اختر نوع التمرين</label>
+                    <select id="exerciseType" [(ngModel)]="selectedExerciseType" name="exerciseType"
+                        class="form-control" required>
+                        <option value="" disabled selected>اختر نوع التمرين</option>
+                        <option value="توازن">توازن</option>
+                        <option value="استطاله">استطاله</option>
+                        <option value="تقوية">تقوية</option>
+                        <option value="اخري">اخري</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-bs-dismiss="modal"
+                    (click)="getFilteredExercises()">فلتر</button>
+                <button type="button" class="btn btn btn-outline-info " data-bs-dismiss="modal"
+                    (click)="getAllExercises()"> <i class="fa-solid fa-retweet m-1 fs-6"></i>اعادة تعيين</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Whatsapp Modal -->
+<div class="modal fade" id="WhatsappModalLabel" tabindex="-1" aria-labelledby="WhatsappModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exerciseName">ادخل رقم الواتساب</label>
+                    <input type="text" id="exerciseName" [(ngModel)]="clientNum" name="exerciseName"
+                        class="form-control" placeholder="ادخل الرقم بمفتاح الدوله الخاص به" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-bs-dismiss="modal"
+                    (click)="sendSelectedLinks()">ارسال</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="creatToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto ms-3">تنبيهات</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body fs-3 fw-medium">
+            {{tosatMessge}}
+        </div>
+    </div>
+</div>
+
+
+
+<div class="fixed-bottom"  *ngIf="isLoggedIn">
+    <button class="btnWhats border-0 m-4 " data-bs-toggle="modal" data-bs-target="#WhatsappModalLabel">
+        <img src="../../../assets/whatsapp_2504957.png" alt="" width="150%">
+    </button>
+</div>
+
+
+

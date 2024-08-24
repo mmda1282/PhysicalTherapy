@@ -1,0 +1,130 @@
+<div class="container ">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-end ">
+            <button type="button" class="btn btn-outline-info m-2 fs-5" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">اضافة
+            فئة <i class="fas fa-plus fa-1x "></i>
+        </button>
+        <p  class="ms-2"> لديك<span class="p-2 fw-bold text-info">{{categories.length}}</span>فئة </p>
+        </div>
+        <button class="btn btn-info" routerLink="/login" *ngIf="!isLoggedIn"> 
+            تسجيل الدخول
+        </button>
+        
+        <div class="dropdown" *ngIf="isLoggedIn">
+            <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            <span  class="">اعدادات</span>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <button class="dropdown-item" (click)="logout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل خروج
+                </button>
+                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#myUpdateModal" routerLink="/resetPassword"
+                    >
+                    <i class="fas fa-edit"></i> اعادة تعيين كلمه المرور
+                </button>
+            
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center" style="gap: 1.4rem;">
+        <div class="categoryCard col-lg-4 col-12  mb-1 rounded-3 overflow-auto" *ngFor="let category of categories">
+            <div class=" d-flex align-items-center justify-content-between">
+                <h5 class="categoryTitle  m-2">{{category.name}}</h5>
+                <img class="categoryImg" [src]="category.photoUrl" alt="categoryImg"  width="500" height="300" >
+            </div>
+            <div
+                class="border border-1 border-secondary border-bottom-0 border-light-0 border-left-0 rounded-3 my-3 opacity-25">
+            </div>
+            <div class="categoryBody m-3">
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <a class="showExercies btn bg-info-subtle border-1 border-info text-secondary"
+                        [routerLink]="['/exercises', category.id]">عرض التمارين <i class="fa fa-low-vision"
+                            aria-hidden="true"></i></a>
+                    <div class="d-flex ">
+                        <button class=" mx-2 border border-1 border-danger-subtle bg-danger-subtle rounded-circle py-1 px-3 btn"
+                            (click)="deleteCategory(category.id)"> <i class="fas fa-trash text-danger fa-xs"></i>
+                        </button>
+                        <button class="  border border-1 border-info-subtle bg-info-subtle rounded-circle py-1 px-3 btn"
+                            data-bs-toggle="modal" data-bs-target="#updateModal" (click)="sendIdCat(category.id)"> <i
+                                class="fas fa-edit text-info fa-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- addModal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form (submit)="onSubmit()">
+                    <div class="form-group">
+                        <label for="categoryName">اسم الفئة</label>
+                        <input type="text" id="categoryName" [(ngModel)]="newCategoryName" name="categoryName"
+                            class="form-control" placeholder="اضف اسم الفئة" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="file">اختر صورة</label>
+                        <input type="file" id="file" (change)="onFileSelected($event)" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-info" data-bs-dismiss="modal" aria-label="Close">اضافة</button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- updateModal -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form (submit)="onUpdate()">
+                    <div class="form-group">
+                        <label for="categoryName">اسم الفئة</label>
+                        <input type="text" id="categoryName" [(ngModel)]="newCategoryName" name="categoryName"
+                            class="form-control" placeholder="اضف اسم الفئة" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="file">اختر صورة</label>
+                        <input type="file" id="file" (change)="onFileSelected($event)" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-info" data-bs-dismiss="modal" aria-label="Close">تعديل</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- toast  -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="creatToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header ">
+            <strong class="me-auto ms-3">تنبيهات</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body fs-3 fw-medium">
+            {{toastMessage}}
+        </div>
+    </div>
+</div>

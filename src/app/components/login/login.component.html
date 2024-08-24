@@ -1,0 +1,26 @@
+<section class="signIn">
+    <div class="signInForm w-75 m-auto bg-white p-5">
+        <h1 class="fw-bolder">سجل دخول هنا</h1>
+        <p class="lead">مرحبا بك ! ادخل اسم المستخدم  وكلمة المرور </p>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="mx-4 mt-2">
+            <div>
+                <label for="username"> اسم المستخدم</label>
+                <input id="username" type="text" class="form-control my-3" formControlName="username">
+                <div *ngIf="f['username'].invalid && (f['username'].dirty || f['username'].touched)"
+                    class="text-danger">
+                    <div *ngIf="f['username'].errors?.['required']"> اسم المستخدم مطلوب.</div>
+                </div>
+            </div>
+            <div>
+                <label for="password">كلمة المرور</label>
+                <input id="password" type="password" class="form-control my-3" formControlName="password">
+                <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)"
+                    class=" text-danger">
+                    <div *ngIf="f['password'].errors?.['required']">كلمة المرور مطلوبة.</div>
+                </div>
+            </div>
+            <button class="btn btn-info" type="submit" [disabled]="loginForm.invalid">تسجيل دخول</button>
+        </form>
+        <div *ngIf="errorMessage" class="text-danger mt-3">عذرا! لقد حدث خطأ تاكد من ان البريد وكلمه المرور صحيحان</div>
+    </div>
+</section>

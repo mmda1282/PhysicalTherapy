@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+body {
+  font-family: "Tajawal", sans-serif;
+}
+h1,
+h2,
+h3 {
+  font-family: "Tajawal", sans-serif;
+  font-weight: 700;
+}
+
+p,
+li,
+span {
+  font-family: "Tajawal", sans-serif;
+  font-weight: 400;
+}
+
+.dropdown-toggle::after {
+    display: none !important;
+   
+}

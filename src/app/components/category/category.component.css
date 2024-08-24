@@ -1,0 +1,17 @@
+.categoryImg {
+  border-end-end-radius: 0;
+  border-start-start-radius: 160px;
+  border-end-start-radius: 160px;
+  width: 165px;
+  height: 100px;
+  object-fit: cover; 
+}
+.categoryCard{
+    width: 300px;
+    box-shadow:0 0 9px 0px #00000038;
+    transition: .5s;
+    padding: 0;
+}
+.categoryCard:hover{
+  box-shadow:0 0 0 ;
+}
